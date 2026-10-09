@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     # Third-party
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',  # enables logout token revocation
     'corsheaders',
     # Local
     'products',
@@ -86,12 +87,20 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS
+# In production set CORS_ALLOWED_ORIGINS_EXTRA in .env as a comma-separated
+# list, e.g.: https://tammo.in,https://www.tammo.in
+# The dev origins are always included so local development keeps working.
+_extra_cors = [
+    o.strip()
+    for o in config('CORS_ALLOWED_ORIGINS_EXTRA', default='').split(',')
+    if o.strip()
+]
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     'http://127.0.0.1:5173',
     'http://localhost:3000',
     'http://127.0.0.1:3000',
-]
+] + _extra_cors
 CORS_ALLOW_CREDENTIALS = True
 
 # DRF
@@ -122,3 +131,7 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='Murshid Store <murshi
 BUSINESS_EMAIL = config('BUSINESS_EMAIL', default='murshid10032004@gmail.com')
 
 FRONTEND_URL = config('FRONTEND_URL', default='http://localhost:5173')
+
+# Google OAuth — public Client ID only (no secret needed server-side for
+# token verification; google-auth fetches Google's public certs at runtime)
+GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID', default='')

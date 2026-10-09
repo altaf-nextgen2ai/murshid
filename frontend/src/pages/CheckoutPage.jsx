@@ -80,7 +80,7 @@ export default function CheckoutPage() {
     const orderData = {
       name: form.name.trim(),
       mobile: form.mobile.trim(),
-      email: form.email.trim(),
+      email: (customerUser?.email || form.email).trim(),
       address: form.address.trim(),
       city: form.city.trim(),
       state: form.state,
@@ -194,12 +194,15 @@ export default function CheckoutPage() {
                   </div>
 
                   <div className="form-group">
-                    <label className="form-label">Email Address</label>
+                    <label className="form-label">
+                      Email Address {customerUser?.email && <span style={{ color: '#c8a96e', fontSize: '0.78rem' }}>(Google Account Linked)</span>}
+                    </label>
                     <input
                       name="email"
                       type="email"
-                      value={form.email}
+                      value={customerUser?.email || form.email}
                       onChange={handleChange}
+                      disabled={!!customerUser?.email}
                       placeholder="rahul@email.com"
                       className={`form-input ${errors.email ? 'error' : ''}`}
                     />

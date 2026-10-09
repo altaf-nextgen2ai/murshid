@@ -38,26 +38,37 @@ class CreateOrderView(APIView):
 
         data = serializer.validated_data
 
-        # Create or get customer (match by mobile)
-        customer, _ = Customer.objects.get_or_create(
-            mobile=data['mobile'],
-            defaults={
-                'name': data['name'],
-                'email': data.get('email', ''),
-                'address': data['address'],
-                'city': data['city'],
-                'state': data['state'],
-                'pincode': data['pincode'],
-            }
-        )
-        # Update customer info
-        customer.name = data['name']
-        customer.email = data.get('email', customer.email)
-        customer.address = data['address']
-        customer.city = data['city']
-        customer.state = data['state']
-        customer.pincode = data['pincode']
-        customer.save()
+        # Create or get customer (match by email or mobile)
+        email = data.get('email', '').strip()
+        if not email and request.user and request.user.is_authenticated:
+            email = getattr(request.user, 'email', '') or getattr(request.user, 'username', '')
+
+        customer = None
+        if email:
+            customer = Customer.objects.filter(email__iexact=email).first()
+        if not customer:
+            customer = Customer.objects.filter(mobile=data['mobile']).first()
+
+        if not customer:
+            customer = Customer.objects.create(
+                mobile=data['mobile'],
+                name=data['name'],
+                email=email,
+                address=data['address'],
+                city=data['city'],
+                state=data['state'],
+                pincode=data['pincode'],
+            )
+        else:
+            customer.name = data['name']
+            if email:
+                customer.email = email
+            customer.mobile = data['mobile']
+            customer.address = data['address']
+            customer.city = data['city']
+            customer.state = data['state']
+            customer.pincode = data['pincode']
+            customer.save()
 
         # Calculate totals on backend
         items_data = data['items']
@@ -269,21 +280,26 @@ class CustomerOrderHistoryView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        email = request.query_params.get('email', '').strip()
-        mobile = request.query_params.get('mobile', '').strip()
+        user_email = None
 
-        if request.user and request.user.is_authenticated and hasattr(request.user, 'email'):
-            if request.user.email:
-                email = request.user.email
+        if request.user and request.user.is_authenticated:
+            if hasattr(request.user, 'email') and request.user.email:
+                user_email = request.user.email
+            elif hasattr(request.user, 'username') and '@' in request.user.username:
+                user_email = request.user.username
 
-        if not email and not mobile:
-            return Response({'error': 'Email or mobile parameter required'}, status=400)
+        param_email = request.query_params.get('email', '').strip()
+        param_mobile = request.query_params.get('mobile', '').strip()
 
-        orders = Order.objects.none()
-        if email:
-            orders = Order.objects.filter(customer__email__iexact=email)
-        elif mobile:
-            orders = Order.objects.filter(customer__mobile=mobile)
+        # Strict security rule: If user is authenticated, strictly restrict to authenticated user's email!
+        target_email = user_email or param_email
+
+        if target_email:
+            orders = Order.objects.filter(customer__email__iexact=target_email)
+        elif param_mobile and not user_email:
+            orders = Order.objects.filter(customer__mobile=param_mobile)
+        else:
+            return Response([], status=200)
 
         serializer = OrderSerializer(orders.order_by('-created_at'), many=True, context={'request': request})
         return Response(serializer.data)

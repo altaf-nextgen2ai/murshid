@@ -5,9 +5,16 @@ const api = axios.create({
   timeout: 30000,
 })
 
-// Attach JWT token from localStorage
+// Attach JWT token from localStorage (Admin or Customer)
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('adminToken')
+  const adminToken = localStorage.getItem('adminToken')
+  let token = adminToken
+  if (!token) {
+    try {
+      const cust = localStorage.getItem('customerUser')
+      if (cust) token = JSON.parse(cust).token
+    } catch (e) {}
+  }
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }

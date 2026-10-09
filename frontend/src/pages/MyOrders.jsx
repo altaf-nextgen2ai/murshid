@@ -79,19 +79,21 @@ export default function MyOrders() {
         )}
         </div>
 
-        {/* Search bar for finding orders by mobile / email */}
-        <form onSubmit={handleSearchSubmit} className={styles.searchBar}>
-          <input
-            type="text"
-            placeholder="Enter Email Address or Mobile Number to search orders..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="form-input"
-          />
-          <button type="submit" className="btn btn-primary">
-            <FiSearch size={16} /> Search Orders
-          </button>
-        </form>
+        {/* Search bar ONLY for unauthenticated guest users */}
+        {!isLoggedIn && (
+          <form onSubmit={handleSearchSubmit} className={styles.searchBar}>
+            <input
+              type="text"
+              placeholder="Enter your Email Address or Mobile Number to find guest orders..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="form-input"
+            />
+            <button type="submit" className="btn btn-primary">
+              <FiSearch size={16} /> Search Orders
+            </button>
+          </form>
+        )}
 
         {/* Content */}
         {loading ? (
