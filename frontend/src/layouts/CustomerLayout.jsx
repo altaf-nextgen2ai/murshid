@@ -4,6 +4,7 @@ import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import WhatsAppFloat from '../components/WhatsAppFloat'
 import BackToTop from '../components/BackToTop'
+import GoogleOneTapPrompt from '../components/GoogleOneTapPrompt'
 
 export default function CustomerLayout() {
   const { pathname } = useLocation()
@@ -14,6 +15,7 @@ export default function CustomerLayout() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <GoogleOneTapPrompt />
       <Navbar />
       <main style={{ flex: 1, paddingTop: '68px' }}>
         <Outlet />

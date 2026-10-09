@@ -10,6 +10,7 @@ import ProductDetail from './pages/ProductDetail'
 import CartPage from './pages/CartPage'
 import CheckoutPage from './pages/CheckoutPage'
 import OrderConfirmation from './pages/OrderConfirmation'
+import MyOrders from './pages/MyOrders'
 import About from './pages/About'
 import Contact from './pages/Contact'
 
@@ -37,6 +38,7 @@ export default function App() {
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/order-confirmation/:orderNumber" element={<OrderConfirmation />} />
+        <Route path="/my-orders" element={<MyOrders />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
       </Route>

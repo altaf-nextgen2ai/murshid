@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path('create/', views.CreateOrderView.as_view(), name='order-create'),
+    path('my-orders/', views.CustomerOrderHistoryView.as_view(), name='customer-orders'),
     path('<str:order_number>/', views.OrderDetailView.as_view(), name='order-detail'),
     path('<str:order_number>/invoice/', views.InvoiceDownloadView.as_view(), name='invoice-download'),
     # Admin

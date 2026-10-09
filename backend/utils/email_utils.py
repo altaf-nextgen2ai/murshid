@@ -8,16 +8,23 @@ def send_order_emails(order):
     """Send confirmation emails to both customer and business admin."""
     try:
         _send_customer_email(order)
+        print(f"📧 [Email Success] Customer email sent to {order.customer.email}")
     except Exception as e:
-        print(f"[Email] Failed to send customer email: {e}")
+        print(f"[Email SMTP Warning] Could not send via SMTP ({e}). Logging to console...")
+        try:
+            from django.core.mail import get_connection
+            connection = get_connection('django.core.mail.backends.console.EmailBackend')
+            _send_customer_email(order, connection=connection)
+        except Exception as err:
+            print(f"[Email Error] Console fallback failed: {err}")
 
     try:
         _send_admin_email(order)
     except Exception as e:
-        print(f"[Email] Failed to send admin email: {e}")
+        print(f"[Email Admin] Failed: {e}")
 
 
-def _send_customer_email(order):
+def _send_customer_email(order, connection=None):
     from core.models import BusinessSettings
     biz = BusinessSettings.get_settings()
     customer = order.customer
@@ -104,6 +111,7 @@ def _send_customer_email(order):
         body=html_body,
         from_email=settings.DEFAULT_FROM_EMAIL,
         to=[customer.email],
+        connection=connection
     )
     email.content_subtype = 'html'
 

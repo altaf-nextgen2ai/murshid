@@ -60,6 +60,7 @@ export const categoryService = {
 export const orderService = {
   create: (data) => api.post('/orders/create/', data),
   getByOrderNumber: (orderNumber) => api.get(`/orders/${orderNumber}/`),
+  getMyOrders: (params = {}) => api.get('/orders/my-orders/', { params }),
   adminList: (params = {}) => api.get('/orders/admin/list/', { params }),
   adminGetById: (id) => api.get(`/orders/admin/${id}/`),
   updateStatus: (id, data) => api.patch(`/orders/admin/${id}/status/`, data),
@@ -85,6 +86,7 @@ export const settingsService = {
 // ── Auth ──────────────────────────────────────────────────────────────────────
 export const authService = {
   login: (credentials) => api.post('/auth/login/', credentials),
+  googleLogin: (data) => api.post('/auth/google-login/', data),
   logout: (refresh) => api.post('/auth/logout/', { refresh }),
   profile: () => api.get('/auth/profile/'),
 }

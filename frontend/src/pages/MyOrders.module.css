@@ -1,0 +1,254 @@
+.page {
+  padding: 40px 0 80px;
+  min-height: 80vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #111;
+  letter-spacing: -0.5px;
+}
+
+.subtitle {
+  color: #666;
+  font-size: 0.95rem;
+  margin-top: 4px;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  padding: 8px 16px 8px 8px;
+  border-radius: 40px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.userAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #c8a96e;
+}
+
+.userInfo strong {
+  display: block;
+  font-size: 0.9rem;
+  color: #111;
+}
+
+.userInfo span {
+  font-size: 0.78rem;
+  color: #666;
+}
+
+.searchBar {
+  display: flex;
+  gap: 12px;
+  max-width: 600px;
+  margin: 0 0 32px;
+}
+
+.emptyState {
+  text-align: center;
+  background: #ffffff;
+  padding: 60px 24px;
+  border-radius: 16px;
+  border: 1px solid #eee;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+}
+
+.emptyIcon {
+  width: 80px;
+  height: 80px;
+  background: #f8f9fa;
+  color: #c8a96e;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+
+.emptyState h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 8px;
+}
+
+.emptyState p {
+  color: #666;
+  font-size: 0.95rem;
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+.ordersList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.orderCard {
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+  transition: all 0.2s ease;
+}
+
+.orderCard:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+  border-color: #d0d0d0;
+}
+
+.cardHeader {
+  padding: 16px 20px;
+  background: #fafafa;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.orderMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.orderId {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #111;
+}
+
+.dateInfo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: #777;
+}
+
+.headerRight {
+  text-align: right;
+}
+
+.totalPrice {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #111;
+}
+
+.paymentBadge {
+  font-size: 0.75rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.itemsList {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.itemRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.itemImg {
+  width: 54px;
+  height: 54px;
+  border-radius: 8px;
+  background: #f4f4f4;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.itemImg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.itemMeta {
+  flex: 1;
+}
+
+.itemName {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 2px;
+}
+
+.itemSpecs {
+  font-size: 0.82rem;
+  color: #666;
+}
+
+.itemSubtotal {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #111;
+}
+
+.cardFooter {
+  padding: 12px 20px;
+  background: #ffffff;
+  border-top: 1px dashed #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.customerSummary {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.actionBtns {
+  display: flex;
+  gap: 10px;
+}
+
+.badge {
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.badgeWarning { background: #fff8e1; color: #f57f17; }
+.badgePrimary { background: #e3f2fd; color: #1565c0; }
+.badgeInfo { background: #e0f7fa; color: #00838f; }
+.badgeSuccess { background: #e8f5e9; color: #2e7d32; }
+.badgeDanger { background: #ffebee; color: #c62828; }

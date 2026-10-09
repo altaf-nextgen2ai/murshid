@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
-import { FiSearch, FiShoppingBag, FiX, FiMenu } from 'react-icons/fi'
+import { useCustomerAuth } from '../context/CustomerAuthContext'
+import { FiSearch, FiShoppingBag, FiX, FiMenu, FiLogOut } from 'react-icons/fi'
 import styles from './Navbar.module.css'
 
 export default function Navbar() {
   const { itemCount } = useCart()
+  const { customerUser, isLoggedIn, logoutCustomer } = useCustomerAuth()
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
@@ -44,8 +46,7 @@ export default function Navbar() {
     { to: '/shop', label: 'Shop' },
     { to: '/shop/category/Men', label: 'Men' },
     { to: '/shop/category/Women', label: 'Women' },
-    { to: '/shop?is_new_arrival=true', label: 'New Arrivals' },
-    { to: '/shop?is_trending=true', label: 'Trending' },
+    { to: '/my-orders', label: 'My Orders' },
   ]
 
   return (
@@ -96,6 +97,22 @@ export default function Navbar() {
             >
               <FiSearch size={20} />
             </button>
+
+            {/* Google User Profile Avatar if logged in */}
+            {isLoggedIn && (
+              <button
+                className={styles.userProfileBtn}
+                onClick={logoutCustomer}
+                title={`Signed in as ${customerUser.name}. Click to Sign Out.`}
+              >
+                <img
+                  src={customerUser.picture || `https://api.dicebear.com/7.x/initials/svg?seed=${customerUser.name}`}
+                  alt={customerUser.name}
+                  className={styles.navAvatar}
+                />
+              </button>
+            )}
+
             <Link to="/cart" className={styles.cartBtn} aria-label="Cart">
               <FiShoppingBag size={20} />
               {itemCount > 0 && (

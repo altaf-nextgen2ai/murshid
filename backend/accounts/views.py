@@ -61,3 +61,47 @@ class AdminProfileView(APIView):
             'is_staff': user.is_staff,
             'is_superuser': user.is_superuser,
         })
+
+
+class GoogleLoginView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        import jwt
+        credential = request.data.get('credential')
+        email = request.data.get('email', '').strip()
+        name = request.data.get('name', '').strip()
+        picture = request.data.get('picture', '').strip()
+
+        if credential:
+            try:
+                decoded = jwt.decode(credential, options={"verify_signature": False})
+                email = decoded.get('email', email)
+                name = decoded.get('name', name or email.split('@')[0])
+                picture = decoded.get('picture', picture)
+            except Exception:
+                pass
+
+        if not email:
+            return Response({'error': 'Email is required for Google login'}, status=400)
+
+        user, created = User.objects.get_or_create(username=email, defaults={
+            'email': email,
+            'first_name': name,
+        })
+        if not user.email:
+            user.email = email
+            user.save()
+
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'access': str(refresh.access_token),
+            'refresh': str(refresh),
+            'user': {
+                'id': user.id,
+                'email': user.email,
+                'name': user.first_name or user.username,
+                'picture': picture,
+            }
+        })
+

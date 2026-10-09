@@ -263,3 +263,28 @@ class OrderStatsView(APIView):
             'confirmed_orders': confirmed,
             'delivered_orders': delivered,
         })
+
+
+class CustomerOrderHistoryView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        email = request.query_params.get('email', '').strip()
+        mobile = request.query_params.get('mobile', '').strip()
+
+        if request.user and request.user.is_authenticated and hasattr(request.user, 'email'):
+            if request.user.email:
+                email = request.user.email
+
+        if not email and not mobile:
+            return Response({'error': 'Email or mobile parameter required'}, status=400)
+
+        orders = Order.objects.none()
+        if email:
+            orders = Order.objects.filter(customer__email__iexact=email)
+        elif mobile:
+            orders = Order.objects.filter(customer__mobile=mobile)
+
+        serializer = OrderSerializer(orders.order_by('-created_at'), many=True, context={'request': request})
+        return Response(serializer.data)
+

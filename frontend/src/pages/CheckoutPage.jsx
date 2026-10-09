@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
+import { useCustomerAuth } from '../context/CustomerAuthContext'
 import { orderService, settingsService } from '../services/api'
 import { FiArrowLeft, FiShoppingBag } from 'react-icons/fi'
 import toast from 'react-hot-toast'
@@ -21,10 +22,21 @@ const initialForm = {
 
 export default function CheckoutPage() {
   const { items, subtotal, savings, clearCart } = useCart()
+  const { customerUser } = useCustomerAuth()
   const navigate = useNavigate()
   const [form, setForm] = useState(initialForm)
   const [errors, setErrors] = useState({})
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (customerUser) {
+      setForm((prev) => ({
+        ...prev,
+        name: prev.name || customerUser.name || '',
+        email: prev.email || customerUser.email || '',
+      }))
+    }
+  }, [customerUser])
 
   if (items.length === 0) {
     return (
