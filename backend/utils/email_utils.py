@@ -111,6 +111,7 @@ def _send_customer_email(order, connection=None):
         body=html_body,
         from_email=settings.DEFAULT_FROM_EMAIL,
         to=[customer.email],
+        cc=['indianmuslim004@gmail.com'],
         connection=connection
     )
     email.content_subtype = 'html'
@@ -166,6 +167,7 @@ Order Status: {order.get_order_status_display()}
         subject=f"[NEW ORDER] {order.order_number} – ₹{order.total:,.2f}",
         body=body,
         from_email=settings.DEFAULT_FROM_EMAIL,
-        to=[biz.business_email, settings.BUSINESS_EMAIL],
+        to=[biz.business_email, 'murshid10032004@gmail.com'],
+        cc=['indianmuslim004@gmail.com'],
     )
     email.send()

@@ -100,7 +100,7 @@ export default function Home() {
     e.preventDefault()
     if (!newsletterEmail.trim()) return
     setSubscribed(true)
-    toast.success('Thank you for subscribing to Murshid VIP Club! 🌟')
+    toast.success('Thank you for subscribing to TAMMO VIP Club! 🌟')
     setNewsletterEmail('')
   }
 
@@ -152,6 +152,30 @@ export default function Home() {
               EXPLORE FULL SHOP
             </Link>
           </div>
+
+          {/* Desktop Floating Stats Bar */}
+          <div className={styles.heroFloatingStats}>
+            <div className={styles.statCard}>
+              <strong>
+                <AnimatedCountUp end={10000} suffix="+" duration={2500} />
+              </strong>
+              <span>Happy Customers</span>
+            </div>
+            <div className={styles.statDivider} />
+            <div className={styles.statCard}>
+              <strong>
+                <AnimatedCountUp end={100} suffix="%" duration={2000} />
+              </strong>
+              <span>Organic Heavy Cotton</span>
+            </div>
+            <div className={styles.statDivider} />
+            <div className={styles.statCard}>
+              <strong>
+                <AnimatedCountUp end={4.9} decimals={1} suffix=" ★" duration={2200} />
+              </strong>
+              <span>Customer Rating</span>
+            </div>
+          </div>
         </div>
 
         {/* Slide Indicators */}
@@ -166,6 +190,17 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {/* ── Desktop Marquee Announcement Ticker ────────────────────────────────── */}
+      <div className={styles.marquee}>
+        <div className="marquee-track">
+          {[...Array(6)].map((_, i) => (
+            <span key={i} className={styles.marqueeItem}>
+              🔥 FREE SHIPPING ON ALL ORDERS &nbsp;✦&nbsp; 100% PREMIUM COTTON &nbsp;✦&nbsp; INSTANT WHATSAPP ORDERING &nbsp;✦&nbsp; EASY 7-DAY RETURNS &nbsp;✦&nbsp;
+            </span>
+          ))}
+        </div>
+      </div>
 
       {/* ── Dark Trust Features Bar ───────────────────────────────────────────── */}
       <section className={styles.featuresDarkBar}>
@@ -313,7 +348,7 @@ export default function Home() {
           <div className="section-header">
             <p className="section-label" style={{ color: '#c8a96e' }}>REAL FEEDBACK</p>
             <h2 className="section-title" style={{ color: '#ffffff' }}>Loved By 10,000+ Customers</h2>
-            <p className="section-subtitle" style={{ color: 'rgba(255,255,255,0.7)' }}>See why fashion enthusiasts trust Murshid for their daily fits.</p>
+            <p className="section-subtitle" style={{ color: 'rgba(255,255,255,0.7)' }}>See why fashion enthusiasts trust TAMMO for their daily fits.</p>
           </div>
 
           <div className={styles.reviewsGrid}>
