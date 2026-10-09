@@ -1,11 +1,12 @@
-from django.urls import path
+from django.urls import path, re_path
 from rest_framework_simplejwt.views import TokenRefreshView
 from . import views
 
 urlpatterns = [
-    path('login/', views.AdminLoginView.as_view(), name='admin-login'),
-    path('google-login/', views.GoogleLoginView.as_view(), name='google-login'),
-    path('logout/', views.AdminLogoutView.as_view(), name='admin-logout'),
-    path('profile/', views.AdminProfileView.as_view(), name='admin-profile'),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token-refresh'),
+    re_path(r'^login/?$', views.AdminLoginView.as_view(), name='admin-login'),
+    re_path(r'^google-login/?$', views.GoogleLoginView.as_view(), name='google-login'),
+    re_path(r'^logout/?$', views.AdminLogoutView.as_view(), name='admin-logout'),
+    re_path(r'^profile/?$', views.AdminProfileView.as_view(), name='admin-profile'),
+    re_path(r'^token/refresh/?$', TokenRefreshView.as_view(), name='token-refresh'),
 ]
+

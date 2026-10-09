@@ -1,7 +1,8 @@
 import { createContext, useContext, useState, useRef } from 'react'
 import { authService } from '../services/api'
 import toast from 'react-hot-toast'
-import GoogleAuthModal from '../components/GoogleAuthModal'
+
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '173907682716-q2gape30qtu66gs1k8gv21bemrmvm9rb.apps.googleusercontent.com'
 
 const CustomerAuthContext = createContext(null)
 
@@ -15,8 +16,53 @@ export function CustomerAuthProvider({ children }) {
     }
   })
 
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
   const pendingActionRef = useRef(null)
+  const isGisInitializedRef = useRef(false)
+
+  const clearGoogleCooldown = () => {
+    try {
+      document.cookie = 'g_state=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;'
+    } catch (e) {
+      // ignore
+    }
+  }
+
+  const handleCredentialResponse = async (response) => {
+    if (response.credential) {
+      await googleLogin({ credential: response.credential })
+    }
+  }
+
+  const initGis = () => {
+    if (window.google?.accounts?.id && !isGisInitializedRef.current) {
+      try {
+        window.google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: handleCredentialResponse,
+          auto_select: false,
+          cancel_on_tap_outside: false,
+          use_fedcm_for_prompt: true,
+        })
+        isGisInitializedRef.current = true
+      } catch (err) {
+        console.error('[GIS Init Error]:', err)
+      }
+    }
+  }
+
+  const triggerPrompt = () => {
+    if (window.google?.accounts?.id) {
+      window.google.accounts.id.prompt((notification) => {
+        if (notification.isNotDisplayed()) {
+          const reason = notification.getNotDisplayedReason()
+          console.log('[Google One-Tap] Not displayed reason:', reason)
+          if (reason === 'opt_out_or_dismissed' || reason === 'exponential_cooldown') {
+            clearGoogleCooldown()
+          }
+        }
+      })
+    }
+  }
 
   const openAuthModal = (onSuccessAction) => {
     if (typeof onSuccessAction === 'function') {
@@ -24,11 +70,23 @@ export function CustomerAuthProvider({ children }) {
     } else {
       pendingActionRef.current = null
     }
-    setIsAuthModalOpen(true)
-  }
 
-  const closeAuthModal = () => {
-    setIsAuthModalOpen(false)
+    clearGoogleCooldown()
+
+    if (!window.google?.accounts?.id) {
+      const script = document.createElement('script')
+      script.src = 'https://accounts.google.com/gsi/client'
+      script.async = true
+      script.defer = true
+      script.onload = () => {
+        initGis()
+        triggerPrompt()
+      }
+      document.body.appendChild(script)
+    } else {
+      initGis()
+      triggerPrompt()
+    }
   }
 
   const googleLogin = async (data) => {
@@ -67,16 +125,10 @@ export function CustomerAuthProvider({ children }) {
         googleLogin,
         logoutCustomer,
         isLoggedIn: !!customerUser,
-        isAuthModalOpen,
         openAuthModal,
-        closeAuthModal,
       }}
     >
       {children}
-      <GoogleAuthModal
-        isOpen={isAuthModalOpen}
-        onClose={closeAuthModal}
-      />
     </CustomerAuthContext.Provider>
   )
 }
@@ -86,3 +138,4 @@ export const useCustomerAuth = () => {
   if (!ctx) throw new Error('useCustomerAuth must be used within CustomerAuthProvider')
   return ctx
 }
+

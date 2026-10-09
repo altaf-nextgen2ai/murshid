@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { useCustomerAuth } from '../context/CustomerAuthContext'
-import { FiSearch, FiShoppingBag, FiX, FiMenu, FiLogOut, FiUser } from 'react-icons/fi'
+import { FiSearch, FiShoppingBag, FiX, FiMenu, FiUser } from 'react-icons/fi'
+import AnnouncementBar from './AnnouncementBar'
 import styles from './Navbar.module.css'
 
 export default function Navbar() {
@@ -16,7 +17,7 @@ export default function Navbar() {
   const searchRef = useRef(null)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60)
+    const onScroll = () => setScrolled(window.scrollY > 30)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
@@ -50,11 +51,12 @@ export default function Navbar() {
   ]
 
   return (
-    <>
+    <header className={styles.headerWrapper}>
+      <AnnouncementBar />
       <nav className={`${styles.navbar} ${scrolled ? styles.scrolled : ''}`}>
         <div className={styles.inner}>
 
-          {/* Mobile: Hamburger */}
+          {/* Mobile Only: Hamburger button */}
           <button
             className={`${styles.iconBtn} ${styles.mobileOnly}`}
             onClick={() => setMobileOpen(true)}
@@ -63,15 +65,15 @@ export default function Navbar() {
             <FiMenu size={22} />
           </button>
 
-          {/* Logo — clean image mark only */}
+          {/* Logo */}
           <Link to="/" className={styles.logo} aria-label="Go to home">
-            <div className={styles.logoMark}>
-              <img src="/logo.jpeg" alt="Brand logo" className={styles.logoImg} />
-              <div className={styles.logoGlow} />
+            <div className={styles.logoTextGroup}>
+              <span className={styles.logoBrand}>T A M M O</span>
+              <span className={styles.logoSubtitle}>MODERN FASHION</span>
             </div>
           </Link>
 
-          {/* Desktop nav links */}
+          {/* Desktop Only: Nav Links */}
           <ul className={`${styles.navLinks} ${styles.desktopOnly}`}>
             {navLinks.map((link) => (
               <li key={link.to}>
@@ -88,7 +90,7 @@ export default function Navbar() {
             ))}
           </ul>
 
-          {/* Actions */}
+          {/* Right Actions */}
           <div className={styles.actions}>
             <button
               className={styles.iconBtn}
@@ -98,7 +100,6 @@ export default function Navbar() {
               <FiSearch size={20} />
             </button>
 
-            {/* Google User Profile Avatar or Sign In button */}
             {isLoggedIn ? (
               <button
                 className={styles.userProfileBtn}
@@ -124,9 +125,7 @@ export default function Navbar() {
 
             <Link to="/cart" className={styles.cartBtn} aria-label="Cart">
               <FiShoppingBag size={20} />
-              {itemCount > 0 && (
-                <span className={styles.cartCount}>{itemCount}</span>
-              )}
+              <span className={styles.cartCount}>{itemCount}</span>
             </Link>
           </div>
         </div>
@@ -163,9 +162,7 @@ export default function Navbar() {
           <div className={styles.mobileSidebar} onClick={(e) => e.stopPropagation()}>
             <div className={styles.mobileSidebarHeader}>
               <Link to="/" className={styles.mobileLogo} onClick={() => setMobileOpen(false)}>
-                <div className={styles.mobileLogoMark}>
-                  <img src="/logo.jpeg" alt="Brand logo" className={styles.mobileLogoImg} />
-                </div>
+                <span className={styles.logoBrandMobile}>T A M M O</span>
               </Link>
               <button className={styles.iconBtn} onClick={() => setMobileOpen(false)}>
                 <FiX size={22} />
@@ -206,13 +203,13 @@ export default function Navbar() {
                   className={styles.mobileNavLink}
                   onClick={() => setMobileOpen(false)}
                 >
-                  Cart {itemCount > 0 && `(${itemCount})`}
+                  Cart ({itemCount})
                 </Link>
               </li>
             </ul>
           </div>
         </div>
       )}
-    </>
+    </header>
   )
 }

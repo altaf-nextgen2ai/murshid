@@ -6,42 +6,52 @@ import AnimatedCountUp from '../components/AnimatedCountUp'
 import { FaWhatsapp } from 'react-icons/fa'
 import {
   FiArrowRight, FiStar, FiTruck, FiRefreshCw, FiShield,
-  FiAward, FiTrendingUp, FiShoppingBag, FiMail, FiCheck
+  FiAward, FiTrendingUp, FiShoppingBag, FiMail, FiCheck, FiHeadphones
 } from 'react-icons/fi'
 import toast from 'react-hot-toast'
 import styles from './Home.module.css'
 
 const heroSlides = [
   {
-    img: '/media/products/thumbnails/t-shirt7.jpeg',
-    label: 'SUMMER DROP 2026',
-    title: 'Streetwear Redefined.',
-    sub: 'Heavyweight organic cotton tees engineered for extreme comfort and oversized aesthetics.',
-    btnText: 'Shop New Season',
-    link: '/shop?is_new_arrival=true'
-  },
-  {
     img: '/media/products/thumbnails/t-shirt3.jpeg',
     label: 'LIMITED EDITION',
-    title: 'Modern Minimal Essentials.',
+    titleLine1: 'Modern',
+    titleLine2: 'Minimal',
+    titleLine3: 'Essentials',
+    titleGold: 'Elevated.',
     sub: 'Crafted with premium dropped shoulders, stone-washed finishes, and durable precision stitching.',
-    btnText: 'Explore Trending',
+    btnText: 'EXPLORE TRENDING',
     link: '/shop?is_trending=true'
+  },
+  {
+    img: '/media/products/thumbnails/t-shirt7.jpeg',
+    label: 'SUMMER DROP 2026',
+    titleLine1: 'Streetwear',
+    titleLine2: 'Redefined',
+    titleLine3: 'Aesthetics',
+    titleGold: 'Unmatched.',
+    sub: 'Heavyweight organic cotton tees engineered for extreme comfort and oversized silhouettes.',
+    btnText: 'SHOP NEW DROP',
+    link: '/shop?is_new_arrival=true'
   },
   {
     img: '/media/products/thumbnails/t-shirt1.jpeg',
     label: 'FAN FAVORITES',
-    title: 'Unmatched Comfort.',
-    sub: 'Join thousands of fashion lovers across India wearing Murshid premium everyday tees.',
-    btnText: 'Shop Best Sellers',
+    titleLine1: 'Everyday',
+    titleLine2: 'Luxury',
+    titleLine3: 'Staples',
+    titleGold: 'Refined.',
+    sub: 'Join thousands of fashion lovers across India wearing Murshid premium everyday fits.',
+    btnText: 'SHOP BEST SELLERS',
     link: '/shop?is_best_seller=true'
   }
 ]
 
 const categories = [
-  { name: 'Men Collection', img: '/media/products/thumbnails/t-shirt1.jpeg', tag: 'Men', desc: 'Oversized & Relaxed Fit Tees' },
-  { name: 'Women Collection', img: '/media/products/thumbnails/t-shirt5.jpeg', tag: 'Women', desc: 'Crop Tees & Oversized Styles' },
-  { name: 'New Arrivals', img: '/media/products/thumbnails/t-shirt7.jpeg', tag: 'new', desc: 'Latest Drop of 2026' },
+  { name: 'T-Shirts', img: '/media/products/thumbnails/t-shirt1.jpeg', tag: 'T-Shirt' },
+  { name: 'Hoodies', img: '/media/products/thumbnails/t-shirt3.jpeg', tag: 'Hoodie' },
+  { name: 'Shirts', img: '/media/products/thumbnails/t-shirt7.jpeg', tag: 'Shirt' },
+  { name: 'Pants', img: '/media/products/thumbnails/t-shirt8.jpeg', tag: 'Pant' },
 ]
 
 const reviews = [
@@ -111,7 +121,7 @@ export default function Home() {
         <div className={styles.heroBg}>
           {heroSlides.map((slide, i) => (
             <div key={i} className={`${styles.heroSlide} ${i === heroIdx ? styles.active : ''}`}>
-              <img src={slide.img} alt={slide.title} className={styles.heroImg} />
+              <img src={slide.img} alt={slide.titleLine1} className={styles.heroImg} />
             </div>
           ))}
           <div className={styles.heroOverlay} />
@@ -119,15 +129,16 @@ export default function Home() {
 
         <div className={`container ${styles.heroContent}`}>
           <div className={styles.heroBadge}>
-            <FiAward size={14} color="#c8a96e" />
+            <FiAward size={13} color="#c8a96e" />
             <span>{heroSlides[heroIdx].label}</span>
           </div>
 
           <h1 className={styles.heroTitle}>
-            {heroSlides[heroIdx].title.split('.')[0]}
-            <br />
+            {heroSlides[heroIdx].titleLine1}<br />
+            {heroSlides[heroIdx].titleLine2}<br />
+            {heroSlides[heroIdx].titleLine3}<br />
             <span className={styles.heroTitleGold}>
-              {heroSlides[heroIdx].title.split('.')[1] || 'Elevated.'}
+              {heroSlides[heroIdx].titleGold}
             </span>
           </h1>
 
@@ -138,32 +149,8 @@ export default function Home() {
               {heroSlides[heroIdx].btnText} <FiArrowRight size={18} />
             </Link>
             <Link to="/shop" className={`btn ${styles.btnOutlineWhite} btn-lg`}>
-              Explore Full Shop
+              EXPLORE FULL SHOP
             </Link>
-          </div>
-
-          {/* Floating Trust Cards */}
-          <div className={styles.heroFloatingStats}>
-            <div className={styles.statCard}>
-              <strong>
-                <AnimatedCountUp end={10000} suffix="+" duration={2500} />
-              </strong>
-              <span>Happy Customers</span>
-            </div>
-            <div className={styles.statDivider} />
-            <div className={styles.statCard}>
-              <strong>
-                <AnimatedCountUp end={100} suffix="%" duration={2000} />
-              </strong>
-              <span>Organic Heavy Cotton</span>
-            </div>
-            <div className={styles.statDivider} />
-            <div className={styles.statCard}>
-              <strong>
-                <AnimatedCountUp end={4.9} decimals={1} suffix=" ★" duration={2200} />
-              </strong>
-              <span>Customer Rating</span>
-            </div>
           </div>
         </div>
 
@@ -180,63 +167,66 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Marquee Announcement Ticker ────────────────────────────────────────── */}
-      <div className={styles.marquee}>
-        <div className="marquee-track">
-          {[...Array(6)].map((_, i) => (
-            <span key={i} className={styles.marqueeItem}>
-              🔥 FREE SHIPPING ON ALL ORDERS &nbsp;✦&nbsp; 100% PREMIUM COTTON &nbsp;✦&nbsp; INSTANT WHATSAPP ORDERING &nbsp;✦&nbsp; EASY 7-DAY RETURNS &nbsp;✦&nbsp;
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* ── Trust Features Bar ────────────────────────────────────────────────── */}
-      <section className={styles.features}>
+      {/* ── Dark Trust Features Bar ───────────────────────────────────────────── */}
+      <section className={styles.featuresDarkBar}>
         <div className="container">
-          <div className={styles.featuresGrid}>
-            {[
-              { icon: FiTruck, title: 'Fast Express Delivery', sub: 'Dispatched within 24 Hours' },
-              { icon: FiRefreshCw, title: 'Easy Returns', sub: 'Hassle-free 7-day policy' },
-              { icon: FiShield, title: '100% Authentic', sub: 'Heavyweight organic cotton' },
-              { icon: FaWhatsapp, title: 'WhatsApp Direct', sub: 'Instant live customer care' },
-            ].map(({ icon: Icon, title, sub }) => (
-              <div key={title} className={styles.feature}>
-                <div className={styles.featureIcon}><Icon size={24} /></div>
-                <div>
-                  <h4>{title}</h4>
-                  <p>{sub}</p>
-                </div>
+          <div className={styles.featuresDarkGrid}>
+            <div className={styles.featureDarkItem}>
+              <FiTruck size={24} className={styles.featureDarkIcon} />
+              <div>
+                <h4>FREE SHIPPING</h4>
+                <p>On All Orders</p>
               </div>
-            ))}
+            </div>
+            <div className={styles.featureDarkDivider} />
+            <div className={styles.featureDarkItem}>
+              <FiRefreshCw size={24} className={styles.featureDarkIcon} />
+              <div>
+                <h4>EASY RETURNS</h4>
+                <p>7-Day Policy</p>
+              </div>
+            </div>
+            <div className={styles.featureDarkDivider} />
+            <div className={styles.featureDarkItem}>
+              <FiShield size={24} className={styles.featureDarkIcon} />
+              <div>
+                <h4>PREMIUM QUALITY</h4>
+                <p>Best Materials</p>
+              </div>
+            </div>
+            <div className={styles.featureDarkDivider} />
+            <div className={styles.featureDarkItem}>
+              <FiHeadphones size={24} className={styles.featureDarkIcon} />
+              <div>
+                <h4>24/7 SUPPORT</h4>
+                <p>We're Here</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ── Category Showcase Grid ────────────────────────────────────────────── */}
-      <section className="section-pad">
+      {/* ── Shop By Category Section ──────────────────────────────────────────── */}
+      <section className={styles.categorySection}>
         <div className="container">
-          <div className="section-header">
-            <p className="section-label">CURATED CATEGORIES</p>
-            <h2 className="section-title">Shop By Collection</h2>
-            <p className="section-subtitle">Discover handcrafted fits for every style statement.</p>
+          <div className={styles.categoryHeader}>
+            <h2 className={styles.categorySectionTitle}>Shop By Category</h2>
+            <Link to="/shop" className={styles.viewAllBtn}>
+              View All <FiArrowRight size={16} />
+            </Link>
           </div>
 
-          <div className={styles.categoryGrid}>
+          <div className={styles.categoryGrid4}>
             {categories.map((cat) => (
               <Link
                 key={cat.name}
-                to={cat.tag === 'new' ? '/shop?is_new_arrival=true' : `/shop/category/${cat.tag}`}
-                className={styles.categoryCard}
+                to={`/shop?search=${encodeURIComponent(cat.name)}`}
+                className={styles.categoryCard4}
               >
-                <img src={cat.img} alt={cat.name} className={styles.categoryImg} />
-                <div className={styles.categoryOverlay} />
-                <div className={styles.categoryInfo}>
-                  <span className={styles.catBadge}>{cat.desc}</span>
-                  <h3>{cat.name}</h3>
-                  <span className={styles.categoryLink}>
-                    Explore Collection <FiArrowRight size={14} />
-                  </span>
+                <img src={cat.img} alt={cat.name} className={styles.categoryImg4} />
+                <div className={styles.categoryOverlay4} />
+                <div className={styles.categoryPillBox}>
+                  <span className={styles.categoryPillText}>{cat.name}</span>
                 </div>
               </Link>
             ))}
@@ -245,11 +235,11 @@ export default function Home() {
       </section>
 
       {/* ── Interactive Tabbed Product Showcase ───────────────────────────────── */}
-      <section className="section-pad" style={{ background: 'var(--gray-100)' }}>
+      <section className="section-pad" style={{ background: '#08080a' }}>
         <div className="container">
           <div className="section-header" style={{ marginBottom: 32 }}>
-            <p className="section-label">EXPLORE TRENDING FASHION</p>
-            <h2 className="section-title">Featured Drops</h2>
+            <p className="section-label" style={{ color: '#c8a96e' }}>EXPLORE TRENDING FASHION</p>
+            <h2 className="section-title" style={{ color: '#ffffff' }}>Featured Drops</h2>
             
             {/* Tabs */}
             <div className={styles.tabList}>
@@ -318,12 +308,12 @@ export default function Home() {
       </section>
 
       {/* ── Customer Reviews Section ─────────────────────────────────────────── */}
-      <section className="section-pad">
+      <section className="section-pad" style={{ background: '#0d0d10' }}>
         <div className="container">
           <div className="section-header">
-            <p className="section-label">REAL FEEDBACK</p>
-            <h2 className="section-title">Loved By 10,000+ Customers</h2>
-            <p className="section-subtitle">See why fashion enthusiasts trust Murshid for their daily fits.</p>
+            <p className="section-label" style={{ color: '#c8a96e' }}>REAL FEEDBACK</p>
+            <h2 className="section-title" style={{ color: '#ffffff' }}>Loved By 10,000+ Customers</h2>
+            <p className="section-subtitle" style={{ color: 'rgba(255,255,255,0.7)' }}>See why fashion enthusiasts trust Murshid for their daily fits.</p>
           </div>
 
           <div className={styles.reviewsGrid}>
@@ -341,8 +331,8 @@ export default function Home() {
                 <div className={styles.reviewer}>
                   <div className={styles.reviewerAvatar}>{r.name[0]}</div>
                   <div>
-                    <strong>{r.name}</strong>
-                    <span>{r.city}, India</span>
+                    <strong style={{ color: '#ffffff' }}>{r.name}</strong>
+                    <span style={{ color: 'rgba(255,255,255,0.6)' }}>{r.city}, India</span>
                   </div>
                 </div>
               </div>
@@ -358,7 +348,7 @@ export default function Home() {
             <div className={styles.newsIcon}>
               <FiMail size={32} />
             </div>
-            <h2>Join the Murshid VIP Club</h2>
+            <h2>Join the TAMMO VIP Club</h2>
             <p>Get early access to exclusive drops, secret discount codes & streetwear updates.</p>
 
             {subscribed ? (
@@ -397,7 +387,7 @@ export default function Home() {
               </p>
             </div>
             <a
-              href={`https://api.whatsapp.com/send?phone=${waNumber}&text=${encodeURIComponent("Hi! I'd like to ask a query about Murshid products.")}`}
+              href={`https://api.whatsapp.com/send?phone=${waNumber}&text=${encodeURIComponent("Hi! I'd like to ask a query about TAMMO products.")}`}
               target="_blank"
               rel="noopener noreferrer"
               className={styles.waCtaBtn}

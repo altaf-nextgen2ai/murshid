@@ -17,7 +17,7 @@ export default function CustomerLayout() {
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <GoogleOneTapPrompt />
       <Navbar />
-      <main style={{ flex: 1, paddingTop: '68px' }}>
+      <main style={{ flex: 1, paddingTop: '102px' }}>
         <Outlet />
       </main>
       <Footer />
