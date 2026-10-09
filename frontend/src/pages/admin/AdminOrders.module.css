@@ -1,0 +1,47 @@
+.page { padding-bottom: 40px; }
+.header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.header h1 { font-size: 24px; font-weight: 800; }
+.header p { font-size: 13px; color: #888; }
+
+.tabs { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 16px; border-bottom: 1px solid #f0f0f0; padding-bottom: 0; }
+.tab {
+  padding: 10px 18px; border: none; background: none;
+  font-size: 13px; font-weight: 600; color: #888;
+  cursor: pointer; border-bottom: 2px solid transparent;
+  margin-bottom: -1px; transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+.tab:hover { color: #0a0a0a; }
+.tabActive { color: #0a0a0a; border-bottom-color: #0a0a0a; }
+
+.searchRow { margin-bottom: 16px; }
+.searchWrap { position: relative; max-width: 400px; }
+.searchIcon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #aaa; }
+.searchInput {
+  width: 100%; padding: 10px 14px 10px 36px;
+  border: 1.5px solid #e0e0e0; border-radius: 8px;
+  font-size: 14px; outline: none; transition: border-color 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+.searchInput:focus { border-color: #0a0a0a; }
+
+.tableCard { background: white; border: 1px solid #f0f0f0; border-radius: 12px; overflow: hidden; }
+.tableWrap { overflow-x: auto; }
+
+.orderId { font-family: monospace; font-size: 13px; }
+.dateCell { font-size: 13px; color: #888; white-space: nowrap; }
+.empty { text-align: center; padding: 48px; color: #888; font-size: 14px; }
+
+.badge {
+  display: inline-block; padding: 3px 10px;
+  border-radius: 100px; font-size: 11px; font-weight: 700;
+  white-space: nowrap;
+}
+
+.viewBtn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: 6px;
+  background: #f5f5f5; color: #555;
+  transition: all 0.2s; text-decoration: none;
+}
+.viewBtn:hover { background: #0a0a0a; color: white; }

@@ -1,0 +1,44 @@
+.page { padding-bottom: 48px; }
+.header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; gap: 16px; flex-wrap: wrap; }
+.back { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #888; margin-bottom: 8px; text-decoration: none; transition: color 0.2s; display: block; }
+.back:hover { color: #0a0a0a; }
+.header h1 { font-size: 22px; font-weight: 800; font-family: monospace; letter-spacing: 1px; }
+.header p { font-size: 13px; color: #888; margin-top: 4px; }
+.headerActions { display: flex; gap: 10px; flex-wrap: wrap; }
+.actionBtn { display: inline-flex; align-items: center; gap: 7px; padding: 10px 16px; border: 1.5px solid #e0e0e0; border-radius: 8px; background: white; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; white-space: nowrap; }
+.actionBtn:hover { border-color: #0a0a0a; }
+.actionBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+.waBtn { display: inline-flex; align-items: center; gap: 7px; padding: 10px 16px; background: #25D366; color: white; border-radius: 8px; font-size: 13px; font-weight: 600; white-space: nowrap; transition: background 0.2s; }
+.waBtn:hover { background: #1da951; }
+.layout { display: grid; grid-template-columns: 1fr 300px; gap: 20px; align-items: start; }
+.mainCol { display: flex; flex-direction: column; gap: 20px; }
+.sideCol { display: flex; flex-direction: column; gap: 20px; position: sticky; top: 80px; }
+.card { background: white; border: 1px solid #f0f0f0; border-radius: 12px; padding: 20px; }
+.cardTitle { font-size: 15px; font-weight: 700; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #f0f0f0; }
+.tableWrap { overflow-x: auto; }
+.productCell { display: flex; align-items: center; gap: 10px; }
+.itemThumb { width: 40px; height: 48px; border-radius: 6px; object-fit: cover; flex-shrink: 0; }
+.itemThumbEmpty { width: 40px; height: 48px; border-radius: 6px; background: #f5f5f5; flex-shrink: 0; }
+.totals { padding: 16px 0 0; border-top: 1px solid #f5f5f5; margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+.totalRow { display: flex; justify-content: space-between; font-size: 14px; color: #555; }
+.grandTotal { font-size: 18px; font-weight: 800; color: #0a0a0a; padding-top: 10px; border-top: 1.5px solid #e0e0e0; }
+.currentStatus { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.statusBadge { display: inline-block; padding: 5px 14px; border-radius: 100px; font-size: 12px; font-weight: 700; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner { animation: spin 0.8s linear infinite; color: #888; }
+.statusBtns { display: flex; flex-direction: column; gap: 6px; }
+.statusBtn { padding: 9px 14px; border: 1.5px solid #e0e0e0; border-radius: 8px; background: white; font-size: 13px; font-weight: 600; cursor: pointer; text-align: left; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+.statusBtn:hover:not(:disabled) { border-color: #0a0a0a; background: #f5f5f5; }
+.statusBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+.statusBtnActive { background: #0a0a0a; color: white; border-color: #0a0a0a; }
+.statusBtnActive:hover { background: #0a0a0a; }
+.customerInfo { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.customerAvatar { width: 44px; height: 44px; border-radius: 50%; background: #0a0a0a; color: white; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; flex-shrink: 0; }
+.customerInfo strong { display: block; font-size: 15px; font-weight: 700; }
+.customerInfo p { font-size: 13px; color: #888; }
+.addressBlock { background: #f8f8f8; border-radius: 8px; padding: 14px; margin-bottom: 16px; }
+.addressLabel { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: #888; margin-bottom: 6px; }
+.addressBlock p { font-size: 14px; color: #555; line-height: 1.7; }
+.viewCustomerLink { font-size: 13px; font-weight: 600; color: #c8a96e; text-decoration: none; }
+.viewCustomerLink:hover { text-decoration: underline; }
+@media (max-width: 900px) { .layout { grid-template-columns: 1fr; } .sideCol { position: static; } }

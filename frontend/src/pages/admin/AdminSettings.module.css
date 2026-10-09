@@ -1,0 +1,89 @@
+.page { padding-bottom: 48px; }
+.header { margin-bottom: 28px; }
+.header h1 { font-size: 24px; font-weight: 800; }
+.header p { font-size: 14px; color: #888; margin-top: 4px; }
+
+.layout { display: grid; grid-template-columns: 1fr 300px; gap: 20px; align-items: start; }
+.mainCol { display: flex; flex-direction: column; gap: 20px; }
+.sideCol { display: flex; flex-direction: column; gap: 20px; position: sticky; top: 80px; }
+
+.card { background: white; border: 1px solid #f0f0f0; border-radius: 12px; padding: 24px; }
+.cardTitle { font-size: 16px; font-weight: 700; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #f0f0f0; }
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.span2 { grid-column: 1 / -1; }
+
+.waHeader { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.hint { font-size: 13px; color: #888; line-height: 1.6; }
+.hint code { background: #f0f0f0; padding: 1px 6px; border-radius: 4px; font-size: 12px; }
+
+.waInputRow { position: relative; }
+.waIcon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); }
+.waInput { padding-left: 38px !important; }
+.waHelp { font-size: 12px; color: #aaa; margin-top: 4px; display: block; }
+
+.waPreview {
+  margin-top: 16px; padding: 14px 16px;
+  background: #f0fff4; border: 1px solid #c3e6cb;
+  border-radius: 8px;
+}
+.waPreviewLabel { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #888; margin-bottom: 6px; }
+.waPreviewLink { font-size: 13px; color: #25D366; word-break: break-all; display: block; margin-bottom: 10px; }
+.testWaBtn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px; background: #25D366; color: white;
+  border-radius: 6px; font-size: 12px; font-weight: 700;
+  transition: background 0.2s;
+}
+.testWaBtn:hover { background: #1da951; }
+
+/* Logo */
+.logoUpload {
+  border: 2px dashed #e0e0e0; border-radius: 10px;
+  overflow: hidden; cursor: pointer; transition: border-color 0.2s;
+  min-height: 160px; display: flex; align-items: center; justify-content: center;
+  margin-bottom: 12px;
+}
+.logoUpload:hover { border-color: #0a0a0a; }
+.logoPreview { width: 100%; max-height: 200px; object-fit: contain; padding: 16px; }
+.logoPlaceholder {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 8px; padding: 32px; color: #bbb;
+}
+.logoPlaceholder p { font-size: 13px; font-weight: 600; color: #888; }
+.logoPlaceholder span { font-size: 11px; color: #bbb; }
+.logoActions { display: flex; gap: 8px; margin-bottom: 10px; }
+.changeLogoBtn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 12px; border: 1.5px solid #e0e0e0; border-radius: 6px;
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  background: white; transition: all 0.2s; font-family: 'Inter', sans-serif;
+}
+.changeLogoBtn:hover { border-color: #0a0a0a; }
+.removeLogoBtn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 12px; border: 1.5px solid #ffd5d5; border-radius: 6px;
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  background: #fff5f5; color: #e74c3c; transition: all 0.2s; font-family: 'Inter', sans-serif;
+}
+.removeLogoBtn:hover { background: #ffeaea; }
+.logoHint { font-size: 12px; color: #aaa; line-height: 1.6; }
+
+/* Save */
+.saveCard {
+  background: white; border: 1px solid #f0f0f0;
+  border-radius: 12px; padding: 20px;
+}
+.savingNote { font-size: 12px; color: #888; text-align: center; margin-top: 8px; }
+
+/* Info */
+.infoCard {
+  background: #fffbf0; border: 1px solid #f0e0b0;
+  border-radius: 12px; padding: 20px;
+}
+.infoCard h4 { font-size: 14px; font-weight: 700; margin-bottom: 12px; }
+.infoCard ul { padding-left: 18px; display: flex; flex-direction: column; gap: 8px; }
+.infoCard li { font-size: 13px; color: #666; line-height: 1.6; }
+
+@media (max-width: 1024px) { .layout { grid-template-columns: 1fr; } .sideCol { position: static; } }
+@media (max-width: 600px) { .grid2 { grid-template-columns: 1fr; } .span2 { grid-column: auto; } }

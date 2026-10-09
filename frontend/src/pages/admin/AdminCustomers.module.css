@@ -1,0 +1,21 @@
+.page { padding-bottom: 40px; }
+.header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.header h1 { font-size: 24px; font-weight: 800; }
+.header p { font-size: 13px; color: #888; }
+.searchRow { margin-bottom: 16px; }
+.searchWrap { position: relative; max-width: 400px; }
+.searchIcon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #aaa; }
+.searchInput { width: 100%; padding: 10px 14px 10px 36px; border: 1.5px solid #e0e0e0; border-radius: 8px; font-size: 14px; outline: none; transition: border-color 0.2s; font-family: 'Inter', sans-serif; }
+.searchInput:focus { border-color: #0a0a0a; }
+.tableCard { background: white; border: 1px solid #f0f0f0; border-radius: 12px; overflow: hidden; }
+.tableWrap { overflow-x: auto; }
+.customerCell { display: flex; align-items: center; gap: 10px; }
+.avatar { width: 34px; height: 34px; border-radius: 50%; background: #0a0a0a; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+.customerName { font-size: 14px; font-weight: 600; }
+.emailCell { font-size: 13px; color: #555; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.muted { color: #bbb; font-size: 13px; }
+.orderCount { display: inline-flex; align-items: center; justify-content: center; min-width: 28px; height: 28px; background: #f0f0f0; border-radius: 100px; font-size: 13px; font-weight: 700; color: #0a0a0a; padding: 0 8px; }
+.dateCell { font-size: 13px; color: #888; white-space: nowrap; }
+.empty { text-align: center; padding: 48px; color: #888; font-size: 14px; }
+.viewBtn { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 6px; background: #f5f5f5; color: #555; transition: all 0.2s; text-decoration: none; }
+.viewBtn:hover { background: #0a0a0a; color: white; }

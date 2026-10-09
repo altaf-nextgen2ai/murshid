@@ -1,0 +1,28 @@
+.page { padding-bottom: 48px; }
+.header { margin-bottom: 24px; }
+.back { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #888; text-decoration: none; transition: color 0.2s; margin-bottom: 12px; display: block; }
+.back:hover { color: #0a0a0a; }
+.headerRow { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.profileCard { display: flex; align-items: center; gap: 16px; }
+.avatar { width: 56px; height: 56px; border-radius: 50%; background: #0a0a0a; color: white; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; flex-shrink: 0; }
+.header h1 { font-size: 22px; font-weight: 800; }
+.header p { font-size: 14px; color: #888; margin-top: 2px; }
+.waBtn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; background: #25D366; color: white; border-radius: 8px; font-size: 13px; font-weight: 700; white-space: nowrap; transition: background 0.2s; }
+.waBtn:hover { background: #1da951; }
+.layout { display: grid; grid-template-columns: 1fr 260px; gap: 20px; align-items: start; }
+.mainCol { display: flex; flex-direction: column; gap: 20px; }
+.sideCol { display: flex; flex-direction: column; gap: 20px; position: sticky; top: 80px; }
+.card { background: white; border: 1px solid #f0f0f0; border-radius: 12px; padding: 20px; }
+.cardTitle { font-size: 15px; font-weight: 700; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #f0f0f0; }
+.tableWrap { overflow-x: auto; }
+.orderId { font-family: monospace; font-size: 13px; }
+.badge { display: inline-block; padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+.dateCell { font-size: 13px; color: #888; white-space: nowrap; }
+.viewBtn { font-size: 12px; font-weight: 600; color: #c8a96e; text-decoration: none; }
+.viewBtn:hover { text-decoration: underline; }
+.empty { color: #888; font-size: 14px; padding: 16px 0; }
+.statItem { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f5f5f5; font-size: 14px; color: #555; }
+.statItem:last-child { border-bottom: none; }
+.statItem strong { color: #0a0a0a; font-weight: 700; }
+.addressLine { font-size: 14px; color: #555; line-height: 1.8; }
+@media (max-width: 900px) { .layout { grid-template-columns: 1fr; } .sideCol { position: static; } }
