@@ -20,33 +20,63 @@ export function CustomerAuthProvider({ children }) {
   })
 
   // ── Modal visibility ─────────────────────────────────────────────────────
-  // This is the single source of truth for whether the auth modal is open.
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   // ── Pending action ───────────────────────────────────────────────────────
-  // Callback to run after a successful login (e.g. "add item to cart").
   const pendingActionRef = useRef(null)
 
   // ── GIS SDK state ────────────────────────────────────────────────────────
-  // Tracks whether window.google.accounts.id.initialize() has been called.
-  // We must call it exactly once per page load.
   const isGisInitializedRef = useRef(false)
-  // Tracks whether the GIS <script> is already being loaded.
   const isGisLoadingRef = useRef(false)
-
-  // ── Helpers ──────────────────────────────────────────────────────────────
-
-  // ── GIS credential callback ref ─────────────────────────────────────────
-  // We use a ref so that initGis() can capture a stable function reference
-  // that always delegates to the latest googleLogin without needing to
-  // re-initialize GIS (which would cause the "called multiple times" warning).
   const credentialCallbackRef = useRef(null)
 
+  // ── googleLogin ──────────────────────────────────────────────────────────
   /**
-   * Initialize GIS exactly once. Safe to call multiple times — the ref guard
-   * prevents duplicate initialize() calls which cause the console warning.
-   * FedCM is deliberately disabled (use_fedcm_for_prompt: false) to avoid the
-   * "FedCM get() rejects with NetworkError" console error on production.
+   * Sends the verified Google credential to our backend.
+   */
+  const googleLogin = useCallback(async (data) => {
+    try {
+      const res = await authService.googleLogin(data)
+      const userData = res.data.user
+      const access = res.data.access
+      const fullUser = { ...userData, token: access }
+
+      localStorage.setItem('customerUser', JSON.stringify(fullUser))
+      setCustomerUser(fullUser)
+      setIsModalOpen(false)
+      toast.success(`Welcome back, ${fullUser.name || 'Customer'}! 👋`)
+
+      if (pendingActionRef.current) {
+        const action = pendingActionRef.current
+        pendingActionRef.current = null
+        setTimeout(action, 50)
+      }
+
+      return { success: true, user: fullUser }
+    } catch (err) {
+      console.error('[Google Login Error]:', err)
+      const msg =
+        err.response?.data?.error || 'Google Sign-In failed. Please try again.'
+      toast.error(msg)
+      return { success: false }
+    }
+  }, [])
+
+  // ── Credential callback ──────────────────────────────────────────────────
+  const handleCredentialResponse = useCallback(
+    async (response) => {
+      if (response?.credential) {
+        await googleLogin({ credential: response.credential })
+      }
+    },
+    [googleLogin]
+  )
+
+  // Wire the ref
+  credentialCallbackRef.current = handleCredentialResponse
+
+  /**
+   * Initialize GIS exactly once.
    */
   const initGis = useCallback(() => {
     if (!window.google?.accounts?.id) return
@@ -55,24 +85,22 @@ export function CustomerAuthProvider({ children }) {
     try {
       window.google.accounts.id.initialize({
         client_id: GOOGLE_CLIENT_ID,
-        // Delegate through ref so we always call the latest googleLogin
-        // without ever needing to re-call initialize()
         callback: (response) => {
-          credentialCallbackRef.current?.(response)
+          if (credentialCallbackRef.current) {
+            credentialCallbackRef.current(response)
+          }
         },
         auto_select: false,
-        cancel_on_tap_outside: true,
-        use_fedcm_for_prompt: false, // avoids FedCM NetworkError in production
+        cancel_on_tap_outside: false,
       })
       isGisInitializedRef.current = true
     } catch (err) {
       console.error('[GIS] initialize() failed:', err)
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [])
 
   /**
-   * Load the Google Identity Services script once, then call initGis().
-   * If it is already present or loading, skip injection.
+   * Load GIS script once.
    */
   const ensureGisLoaded = useCallback(
     (onReady) => {
@@ -82,15 +110,18 @@ export function CustomerAuthProvider({ children }) {
         return
       }
       if (isGisLoadingRef.current) {
-        // Script is already being fetched; attach another onload listener
         const existing = document.querySelector(
           'script[src="https://accounts.google.com/gsi/client"]'
         )
         if (existing) {
-          existing.addEventListener('load', () => {
-            initGis()
-            onReady?.()
-          }, { once: true })
+          existing.addEventListener(
+            'load',
+            () => {
+              initGis()
+              onReady?.()
+            },
+            { once: true }
+          )
         }
         return
       }
@@ -112,85 +143,29 @@ export function CustomerAuthProvider({ children }) {
     [initGis]
   )
 
-  // ── Credential callback (called by GIS after user picks an account) ──────
-  const handleCredentialResponse = useCallback(async (response) => {
-    if (response?.credential) {
-      await googleLogin({ credential: response.credential })
-    }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  const openAuthModal = useCallback(
+    (onSuccessAction) => {
+      if (customerUser) return
 
-  // ── openAuthModal ────────────────────────────────────────────────────────
-  /**
-   * The single entry-point to show the auth modal. Called from:
-   *   - CartContext (when user tries to add item while logged out)
-   *   - Navbar sign-in button
-   *   - GoogleOneTapPrompt (auto-trigger after 1s on first visit)
-   *
-   * Always opens the modal UI. Also ensures GIS is loaded and rendered
-   * inside the modal for the official Google button.
-   */
-  const openAuthModal = useCallback((onSuccessAction) => {
-    if (customerUser) return // already logged in — nothing to open
+      if (typeof onSuccessAction === 'function') {
+        pendingActionRef.current = onSuccessAction
+      } else {
+        pendingActionRef.current = null
+      }
 
-    // Store the callback to run after successful login
-    if (typeof onSuccessAction === 'function') {
-      pendingActionRef.current = onSuccessAction
-    } else {
-      pendingActionRef.current = null
-    }
-
-    // Ensure GIS SDK is loaded (modal will render the official button)
-    ensureGisLoaded()
-
-    // Open the modal — this triggers GoogleAuthModal to render
-    setIsModalOpen(true)
-  }, [customerUser, ensureGisLoaded])
+      ensureGisLoaded()
+      setIsModalOpen(true)
+    },
+    [customerUser, ensureGisLoaded]
+  )
 
   const closeAuthModal = useCallback(() => {
     setIsModalOpen(false)
-    // Do NOT clear pendingAction here — user may close and re-open the modal
-    // without losing the pending cart action
   }, [])
 
-  // ── googleLogin ──────────────────────────────────────────────────────────
-  /**
-   * Sends the verified Google credential to our backend.
-   * Only accepts { credential } — no plain email/name bypass.
-   */
-  const googleLogin = useCallback(async (data) => {
-    try {
-      const res = await authService.googleLogin(data)
-      const userData = res.data.user
-      const access = res.data.access
-      const fullUser = { ...userData, token: access }
-
-      localStorage.setItem('customerUser', JSON.stringify(fullUser))
-      setCustomerUser(fullUser)
-      setIsModalOpen(false)
-      toast.success(`Welcome, ${fullUser.name || 'Customer'}! 👋`)
-
-      // Run the deferred action (e.g. add-to-cart) after login
-      if (pendingActionRef.current) {
-        const action = pendingActionRef.current
-        pendingActionRef.current = null
-        // Small delay so state settles before the action runs
-        setTimeout(action, 50)
-      }
-
-      return { success: true, user: fullUser }
-    } catch (err) {
-      const msg =
-        err.response?.data?.error || 'Google Sign-In failed. Please try again.'
-      toast.error(msg)
-      return { success: false }
-    }
-  }, [])
-
-  // ── logoutCustomer ───────────────────────────────────────────────────────
   const logoutCustomer = useCallback(() => {
     localStorage.removeItem('customerUser')
     setCustomerUser(null)
-    // Also cancel any pending deferred action
     pendingActionRef.current = null
     toast.success('Signed out successfully.')
   }, [])
