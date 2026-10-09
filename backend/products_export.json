@@ -1,0 +1,192 @@
+[
+{
+  "model": "products.product",
+  "pk": 1,
+  "fields": {
+    "name": "Oversized Streetwear Tee",
+    "category": 1,
+    "sub_category": null,
+    "description": "Premium heavyweight cotton oversized t-shirt with dropped shoulders. Perfect for the modern street style look.",
+    "price": "1299.00",
+    "discount_price": "999.00",
+    "thumbnail": "products/thumbnails/t-shirt1.jpeg",
+    "is_new_arrival": true,
+    "is_trending": true,
+    "is_featured": false,
+    "is_best_seller": false,
+    "created_at": "2026-10-08T02:32:15.438Z",
+    "updated_at": "2026-10-08T02:32:15.438Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 2,
+  "fields": {
+    "name": "Essential Graphic Tee",
+    "category": 1,
+    "sub_category": null,
+    "description": "Clean minimal graphic print t-shirt in premium cotton blend. A wardrobe staple for every season.",
+    "price": "899.00",
+    "discount_price": null,
+    "thumbnail": "products/thumbnails/t-shirt2.jpeg",
+    "is_new_arrival": true,
+    "is_trending": false,
+    "is_featured": false,
+    "is_best_seller": true,
+    "created_at": "2026-10-08T02:32:15.619Z",
+    "updated_at": "2026-10-08T02:32:15.619Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 3,
+  "fields": {
+    "name": "Premium Drop Shoulder Tee",
+    "category": 1,
+    "sub_category": null,
+    "description": "Ultra-soft drop shoulder design tee crafted for maximum comfort and contemporary style.",
+    "price": "1199.00",
+    "discount_price": "949.00",
+    "thumbnail": "products/thumbnails/t-shirt3.jpeg",
+    "is_new_arrival": false,
+    "is_trending": true,
+    "is_featured": true,
+    "is_best_seller": false,
+    "created_at": "2026-10-08T02:32:15.793Z",
+    "updated_at": "2026-10-08T02:32:15.793Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 4,
+  "fields": {
+    "name": "Vintage Washed Tee",
+    "category": 1,
+    "sub_category": null,
+    "description": "Stone-washed vintage finish tee with a relaxed fit. The worn-in look that never goes out of style.",
+    "price": "1099.00",
+    "discount_price": null,
+    "thumbnail": "products/thumbnails/t-shirt4.jpeg",
+    "is_new_arrival": true,
+    "is_trending": false,
+    "is_featured": false,
+    "is_best_seller": false,
+    "created_at": "2026-10-08T02:32:16.063Z",
+    "updated_at": "2026-10-08T02:32:16.063Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 5,
+  "fields": {
+    "name": "Crop Streetwear Tee",
+    "category": 1,
+    "sub_category": null,
+    "description": "Trendy cropped tee with modern streetwear aesthetic. Pairs perfectly with high-waist bottoms.",
+    "price": "799.00",
+    "discount_price": "649.00",
+    "thumbnail": "products/thumbnails/t-shirt5.jpeg",
+    "is_new_arrival": false,
+    "is_trending": true,
+    "is_featured": false,
+    "is_best_seller": true,
+    "created_at": "2026-10-08T02:32:16.259Z",
+    "updated_at": "2026-10-08T02:32:16.259Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 6,
+  "fields": {
+    "name": "Minimal Logo Tee",
+    "category": 1,
+    "sub_category": null,
+    "description": "Clean minimal logo embroidered tee in soft pima cotton. Timeless and versatile.",
+    "price": "999.00",
+    "discount_price": null,
+    "thumbnail": "products/thumbnails/t-shirt6.jpeg",
+    "is_new_arrival": false,
+    "is_trending": false,
+    "is_featured": true,
+    "is_best_seller": false,
+    "created_at": "2026-10-08T02:32:16.468Z",
+    "updated_at": "2026-10-08T02:32:16.468Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 7,
+  "fields": {
+    "name": "Unisex Premium Tee",
+    "category": 1,
+    "sub_category": null,
+    "description": "Gender-neutral premium heavyweight tee designed for everyone. Made with 100% organic cotton.",
+    "price": "1499.00",
+    "discount_price": "1199.00",
+    "thumbnail": "products/thumbnails/t-shirt7.jpeg",
+    "is_new_arrival": true,
+    "is_trending": false,
+    "is_featured": true,
+    "is_best_seller": true,
+    "created_at": "2026-10-08T02:32:16.716Z",
+    "updated_at": "2026-10-08T02:32:16.716Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 8,
+  "fields": {
+    "name": "Relaxed Fit Tee",
+    "category": 1,
+    "sub_category": null,
+    "description": "Effortlessly relaxed fit tee with a boyfriend silhouette. Super soft and breathable.",
+    "price": "849.00",
+    "discount_price": null,
+    "thumbnail": "products/thumbnails/t-shirt8.jpeg",
+    "is_new_arrival": false,
+    "is_trending": true,
+    "is_featured": false,
+    "is_best_seller": false,
+    "created_at": "2026-10-08T02:32:17.079Z",
+    "updated_at": "2026-10-08T02:32:17.079Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 9,
+  "fields": {
+    "name": "Classic Essential Tee",
+    "category": 1,
+    "sub_category": null,
+    "description": "The classic tee reinvented with premium cotton and a modern slim fit. Your everyday essential.",
+    "price": "699.00",
+    "discount_price": "549.00",
+    "thumbnail": "products/thumbnails/t-shirt9.jpeg",
+    "is_new_arrival": false,
+    "is_trending": false,
+    "is_featured": false,
+    "is_best_seller": true,
+    "created_at": "2026-10-08T02:32:17.296Z",
+    "updated_at": "2026-10-08T02:32:17.296Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 10,
+  "fields": {
+    "name": "Korean Streetwear",
+    "category": 1,
+    "sub_category": "Overshized",
+    "description": "test",
+    "price": "1000.00",
+    "discount_price": "100.00",
+    "thumbnail": "products/thumbnails/Korean_Streetwear_Ink_Art_Collage.png",
+    "is_new_arrival": false,
+    "is_trending": false,
+    "is_featured": false,
+    "is_best_seller": true,
+    "created_at": "2026-10-08T14:25:00.935Z",
+    "updated_at": "2026-10-08T14:25:00.935Z"
+  }
+}
+]
