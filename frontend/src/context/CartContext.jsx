@@ -1,9 +1,11 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import toast from 'react-hot-toast'
+import { useCustomerAuth } from './CustomerAuthContext'
 
 const CartContext = createContext(null)
 
 export function CartProvider({ children }) {
+  const { isLoggedIn, openAuthModal } = useCustomerAuth()
   const [items, setItems] = useState(() => {
     try {
       const saved = localStorage.getItem('murshid_cart')
@@ -19,6 +21,13 @@ export function CartProvider({ children }) {
   }, [items])
 
   const addItem = (product, size, color, quantity = 1) => {
+    if (!isLoggedIn) {
+      toast.error('Please Sign Up / Log In first to add items to your cart!')
+      openAuthModal(() => {
+        addItem(product, size, color, quantity)
+      })
+      return
+    }
     const key = `${product.id}-${size}-${color}`
     setItems((prev) => {
       const existing = prev.find((i) => i.key === key)

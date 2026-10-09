@@ -2,12 +2,12 @@ import { useState, useEffect, useRef } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { useCustomerAuth } from '../context/CustomerAuthContext'
-import { FiSearch, FiShoppingBag, FiX, FiMenu, FiLogOut } from 'react-icons/fi'
+import { FiSearch, FiShoppingBag, FiX, FiMenu, FiLogOut, FiUser } from 'react-icons/fi'
 import styles from './Navbar.module.css'
 
 export default function Navbar() {
   const { itemCount } = useCart()
-  const { customerUser, isLoggedIn, logoutCustomer } = useCustomerAuth()
+  const { customerUser, isLoggedIn, logoutCustomer, openAuthModal } = useCustomerAuth()
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
@@ -98,8 +98,8 @@ export default function Navbar() {
               <FiSearch size={20} />
             </button>
 
-            {/* Google User Profile Avatar if logged in */}
-            {isLoggedIn && (
+            {/* Google User Profile Avatar or Sign In button */}
+            {isLoggedIn ? (
               <button
                 className={styles.userProfileBtn}
                 onClick={logoutCustomer}
@@ -110,6 +110,15 @@ export default function Navbar() {
                   alt={customerUser.name}
                   className={styles.navAvatar}
                 />
+              </button>
+            ) : (
+              <button
+                className={styles.iconBtn}
+                onClick={() => openAuthModal()}
+                title="Sign In / Sign Up"
+                aria-label="Sign In / Sign Up"
+              >
+                <FiUser size={20} />
               </button>
             )}
 
