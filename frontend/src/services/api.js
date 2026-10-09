@@ -5,34 +5,70 @@ const api = axios.create({
   timeout: 30000,
 })
 
-// Attach JWT token from localStorage (Admin or Customer)
+// ── Request interceptor: attach JWT only when one exists ─────────────────────
 api.interceptors.request.use((config) => {
+  // Admin token takes priority
   const adminToken = localStorage.getItem('adminToken')
-  let token = adminToken
-  if (!token) {
-    try {
-      const cust = localStorage.getItem('customerUser')
-      if (cust) token = JSON.parse(cust).token
-    } catch (e) {}
+  if (adminToken) {
+    config.headers.Authorization = `Bearer ${adminToken}`
+    return config
   }
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
+
+  // Customer token — parse carefully; a corrupt value must not be sent
+  try {
+    const raw = localStorage.getItem('customerUser')
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      const token = parsed?.token
+      // Only attach if it looks like a JWT (three base64 segments)
+      if (token && typeof token === 'string' && token.split('.').length === 3) {
+        config.headers.Authorization = `Bearer ${token}`
+      }
+    }
+  } catch {
+    // JSON.parse failed — stale/corrupt entry; leave it; don't attach anything
   }
+
   return config
 })
 
-// Handle 401 - redirect to admin login
+// ── Response interceptor ─────────────────────────────────────────────────────
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      const path = window.location.pathname
+    const status = error.response?.status
+    const path = window.location.pathname
+
+    if (status === 401) {
       if (path.startsWith('/admin') && path !== '/admin/login') {
+        // Admin session expired — clear and redirect
         localStorage.removeItem('adminToken')
         localStorage.removeItem('adminUser')
         window.location.href = '/admin/login'
       }
+      // For customer routes: clear a stale customerUser token silently.
+      // Don't redirect — the page just shows logged-out state.
+      // Only do this if the failed request was NOT the google-login endpoint
+      // itself (that 401 means bad credential, not a stale session).
+      const url = error.config?.url || ''
+      if (!url.includes('/auth/') && !path.startsWith('/admin')) {
+        try {
+          const raw = localStorage.getItem('customerUser')
+          if (raw) {
+            const parsed = JSON.parse(raw)
+            if (parsed?.token) {
+              // Token is rejected by server — clear it so future requests
+              // go out unauthenticated and hit the public permission class
+              localStorage.removeItem('customerUser')
+              console.warn('[Auth] Stale customer token cleared after 401.')
+            }
+          }
+        } catch {
+          localStorage.removeItem('customerUser')
+        }
+      }
     }
+
     return Promise.reject(error)
   }
 )
@@ -85,9 +121,10 @@ export const customerService = {
 // ── Settings ──────────────────────────────────────────────────────────────────
 export const settingsService = {
   get: () => api.get('/core/settings/'),
-  update: (data) => api.patch('/core/settings/', data, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  }),
+  update: (data) =>
+    api.patch('/core/settings/', data, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
 }
 
 // ── Auth ──────────────────────────────────────────────────────────────────────

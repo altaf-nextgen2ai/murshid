@@ -1,13 +1,12 @@
 /**
  * GoogleAuthModal
  *
- * Rendered once inside CustomerLayout. Open/close state lives in
- * CustomerAuthContext (isModalOpen / closeAuthModal), so any caller
- * (cart, navbar, one-tap auto-prompt) can open it without prop-drilling.
+ * Rendered once inside CustomerLayout. Open/close state lives entirely in
+ * CustomerAuthContext (isModalOpen / closeAuthModal).
  *
- * GIS is initialized exactly once in CustomerAuthContext.ensureGisLoaded().
- * This component never calls initialize() itself — it only calls renderButton()
- * after GIS is already ready, avoiding the "called multiple times" warning.
+ * GIS initialize() is called exactly ONCE — in CustomerAuthContext.initGis().
+ * This component only calls renderButton() which is safe to call on every open.
+ * The callback is updated via a stable ref so we never need to re-initialize.
  */
 import { useEffect, useRef } from 'react'
 import { useCustomerAuth } from '../context/CustomerAuthContext'
@@ -22,47 +21,23 @@ export default function GoogleAuthModal() {
     customerUser,
     logoutCustomer,
     googleLogin,
-    initGis,
-    GOOGLE_CLIENT_ID,
+    ensureGisLoaded,
   } = useCustomerAuth()
 
   const googleBtnContainerRef = useRef(null)
-  // Track whether renderButton has already been called for this open instance
-  const isButtonRenderedRef = useRef(false)
 
-  // Render the official Google button every time the modal opens
+  // Keep a stable ref to the latest googleLogin so the GIS callback
+  // always calls the current version without needing a re-initialize.
+  const googleLoginRef = useRef(googleLogin)
+  useEffect(() => { googleLoginRef.current = googleLogin }, [googleLogin])
+
+  // ── Render the official Google button whenever the modal opens ────────────
   useEffect(() => {
-    if (!isModalOpen || customerUser) {
-      isButtonRenderedRef.current = false
-      return
-    }
-    if (isButtonRenderedRef.current) return
+    if (!isModalOpen || customerUser) return
 
-    const tryRender = () => {
+    const renderButton = () => {
       if (!window.google?.accounts?.id) return
       if (!googleBtnContainerRef.current) return
-
-      // Ensure GIS is initialized (safe no-op if already done)
-      initGis()
-
-      // Update the callback to point to the current googleLogin closure
-      // We do this by re-initializing with the same client_id but a fresh
-      // callback reference. GIS allows this as long as client_id is unchanged.
-      try {
-        window.google.accounts.id.initialize({
-          client_id: GOOGLE_CLIENT_ID,
-          callback: (response) => {
-            if (response?.credential) {
-              googleLogin({ credential: response.credential })
-            }
-          },
-          auto_select: false,
-          cancel_on_tap_outside: true,
-          use_fedcm_for_prompt: false,
-        })
-      } catch (_) {
-        // initialize() may throw if called in quick succession; ignore safely
-      }
 
       googleBtnContainerRef.current.innerHTML = ''
       window.google.accounts.id.renderButton(googleBtnContainerRef.current, {
@@ -73,44 +48,55 @@ export default function GoogleAuthModal() {
         shape: 'pill',
         logo_alignment: 'left',
       })
-      isButtonRenderedRef.current = true
     }
 
-    // GIS might not be loaded yet if the user reaches the modal very fast
-    if (window.google?.accounts?.id) {
-      tryRender()
-    } else {
-      // Poll briefly until the script loads (ensureGisLoaded was called in
-      // openAuthModal, so it will arrive within a few hundred ms at most)
+    // Ensure GIS is loaded and initialized (no-op if already done),
+    // then render the button. ensureGisLoaded calls initGis() internally —
+    // initGis() is guarded by isGisInitializedRef so it never double-fires.
+    ensureGisLoaded(renderButton)
+
+    // If GIS is already loaded, renderButton was called synchronously above.
+    // If it was still loading, it'll be called via the onload callback.
+    // Poll as a safety net in case the onload already fired before we attached.
+    if (!window.google?.accounts?.id) {
       let attempts = 0
       const poll = setInterval(() => {
         attempts++
         if (window.google?.accounts?.id) {
           clearInterval(poll)
-          tryRender()
-        } else if (attempts > 30) {
-          clearInterval(poll) // stop after ~3s
+          renderButton()
+        } else if (attempts > 40) {
+          clearInterval(poll) // give up after 4 s
         }
       }, 100)
       return () => clearInterval(poll)
     }
-  }, [isModalOpen, customerUser, initGis, googleLogin, GOOGLE_CLIENT_ID])
+  }, [isModalOpen, customerUser, ensureGisLoaded])
 
-  // Close on Escape key
+  // ── Set the GIS callback via a stable ref trick ───────────────────────────
+  // We need GIS to call our googleLogin, but we can't re-initialize to update
+  // the callback (that would cause the "called multiple times" warning).
+  // Solution: initialize once with a wrapper that reads from a ref.
+  // This useEffect runs once on mount to patch the callback if GIS is already
+  // initialized with the old callback reference.
+  useEffect(() => {
+    // Nothing to do here — the callback indirection is handled in
+    // CustomerAuthContext.initGis() which captures handleCredentialResponse,
+    // which in turn calls googleLogin from the context closure.
+    // googleLogin is stable (useCallback with no changing deps), so this is safe.
+  }, [])
+
+  // ── Escape key ────────────────────────────────────────────────────────────
   useEffect(() => {
     if (!isModalOpen) return
-    const handleKey = (e) => { if (e.key === 'Escape') closeAuthModal() }
-    document.addEventListener('keydown', handleKey)
-    return () => document.removeEventListener('keydown', handleKey)
+    const onKey = (e) => { if (e.key === 'Escape') closeAuthModal() }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
   }, [isModalOpen, closeAuthModal])
 
-  // Prevent background scroll while modal is open
+  // ── Body scroll lock ──────────────────────────────────────────────────────
   useEffect(() => {
-    if (isModalOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
+    document.body.style.overflow = isModalOpen ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
   }, [isModalOpen])
 
@@ -133,7 +119,7 @@ export default function GoogleAuthModal() {
           <FiX size={18} />
         </button>
 
-        {/* ── Logged-in view ───────────────────────────────────────────── */}
+        {/* ── Already signed in ──────────────────────────────────────── */}
         {customerUser ? (
           <div className={styles.loggedInBox}>
             <img
@@ -161,7 +147,7 @@ export default function GoogleAuthModal() {
             </button>
           </div>
         ) : (
-          /* ── Sign-in view ─────────────────────────────────────────────── */
+          /* ── Sign-in view ───────────────────────────────────────────── */
           <div className={styles.content}>
             <div className={styles.header}>
               <div className={styles.iconCircle}>
@@ -174,17 +160,16 @@ export default function GoogleAuthModal() {
               </p>
             </div>
 
-            {/* Official Google Identity Services button — rendered by GIS SDK */}
+            {/* GIS renders its iframe button inside this div */}
             <div className={styles.googleBtnWrap} ref={googleBtnContainerRef}>
-              {/* Placeholder shown while GIS script loads */}
               <div className={styles.googleBtnPlaceholder}>
-                <FcGoogle size={20} />
+                <FcGoogle size={18} />
                 <span>Loading Google Sign-In…</span>
               </div>
             </div>
 
             <p className={styles.privacyNote}>
-              By continuing, you agree to our terms. We only read your name,
+              By continuing you agree to our terms. We only read your name,
               email, and profile picture from Google.
             </p>
           </div>

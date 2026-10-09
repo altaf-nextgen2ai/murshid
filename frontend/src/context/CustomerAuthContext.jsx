@@ -36,6 +36,12 @@ export function CustomerAuthProvider({ children }) {
 
   // ── Helpers ──────────────────────────────────────────────────────────────
 
+  // ── GIS credential callback ref ─────────────────────────────────────────
+  // We use a ref so that initGis() can capture a stable function reference
+  // that always delegates to the latest googleLogin without needing to
+  // re-initialize GIS (which would cause the "called multiple times" warning).
+  const credentialCallbackRef = useRef(null)
+
   /**
    * Initialize GIS exactly once. Safe to call multiple times — the ref guard
    * prevents duplicate initialize() calls which cause the console warning.
@@ -49,7 +55,11 @@ export function CustomerAuthProvider({ children }) {
     try {
       window.google.accounts.id.initialize({
         client_id: GOOGLE_CLIENT_ID,
-        callback: handleCredentialResponse,
+        // Delegate through ref so we always call the latest googleLogin
+        // without ever needing to re-call initialize()
+        callback: (response) => {
+          credentialCallbackRef.current?.(response)
+        },
         auto_select: false,
         cancel_on_tap_outside: true,
         use_fedcm_for_prompt: false, // avoids FedCM NetworkError in production

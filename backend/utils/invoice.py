@@ -38,7 +38,10 @@ def create_qr_code(data, size=70):
 
 
 def generate_invoice_pdf(order):
-    """Generate a professional invoice PDF for the given order and save it."""
+    """Generate a professional invoice PDF for the given order and save it.
+    Always regenerates — never serves a cached copy — so logo/business info
+    changes take effect immediately.
+    """
 
     # Ensure invoices directory exists
     invoice_dir = os.path.join(settings.MEDIA_ROOT, 'invoices')
@@ -106,13 +109,25 @@ def generate_invoice_pdf(order):
 
     # ── Header ──────────────────────────────────────────────────────────────
     logo_cell = ''
-    logo_path = None
     if biz.logo:
         try:
-            logo_path = os.path.join(settings.MEDIA_ROOT, biz.logo.name)
+            # Normalize path separators for the current OS
+            logo_path = os.path.normpath(
+                os.path.join(settings.MEDIA_ROOT, biz.logo.name)
+            )
             if os.path.exists(logo_path):
-                logo_cell = RLImage(logo_path, width=3 * cm, height=3 * cm)
-        except Exception:
+                # Keep aspect ratio: fit inside 3cm wide, max 3cm tall
+                from PIL import Image as PILImage
+                with PILImage.open(logo_path) as pil_img:
+                    orig_w, orig_h = pil_img.size
+                max_w = 3.0 * cm
+                max_h = 2.5 * cm
+                ratio = min(max_w / orig_w, max_h / orig_h)
+                logo_w = orig_w * ratio
+                logo_h = orig_h * ratio
+                logo_cell = RLImage(logo_path, width=logo_w, height=logo_h)
+        except Exception as e:
+            print(f"[Invoice] Logo load failed: {e}")
             logo_cell = ''
 
     biz_info = f"""<b><font size="16">{biz.business_name}</font></b><br/>
