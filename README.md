@@ -369,4 +369,5 @@ python manage.py migrate
 
 *Built with React + Django + SQLite3 · Murshid Fashion Store*
 #   m u r s h i d  
+ #   m u r s h i d  
  
