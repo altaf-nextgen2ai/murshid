@@ -69,10 +69,11 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SERVER_PORT || '22' }}
           script: |
+            set -e
             echo "🚀 Starting Deployment for Murshid..."
             
             # Navigate to project directory
-            cd ${{ secrets.SERVER_PATH || '/var/www/murshid' }}
+            cd ${{ secrets.SERVER_PATH || '/home/ec2-user/murshid' }}
 
             # Pull latest changes from main branch
             git fetch origin
@@ -89,13 +90,16 @@ jobs:
             python manage.py migrate --noinput
             python manage.py collectstatic --noinput
 
-            # Restart Django service (Gunicorn / Systemd)
+            # Restart Django service (Systemd / PM2 / Gunicorn)
             if systemctl is-active --quiet murshid-backend; then
               sudo systemctl restart murshid-backend
-              echo "✅ Django service restarted."
+              echo "✅ Django service (murshid-backend) restarted."
+            elif systemctl is-active --quiet gunicorn; then
+              sudo systemctl restart gunicorn
+              echo "✅ Gunicorn service restarted."
             elif command -v pm2 &> /dev/null; then
-              pm2 restart murshid-backend || pm2 start "gunicorn config.wsgi:application --bind 127.0.0.1:8001" --name murshid-backend
-              echo "✅ PM2 process restarted."
+              pm2 restart all || echo "PM2 restart attempted."
+              echo "✅ PM2 processes restarted."
             fi
 
             # ── Frontend Deployment ────────────────────────────────────
@@ -104,9 +108,18 @@ jobs:
             npm install --production=false
             npm run build
 
+            # Copy built dist files to Nginx web root (/var/www/tammo)
+            if [ -d "/var/www/tammo" ]; then
+              sudo cp -r dist/* /var/www/tammo/
+              echo "✅ Frontend dist copied to /var/www/tammo"
+            elif [ -d "/var/www/murshid" ]; then
+              sudo cp -r dist/* /var/www/murshid/
+              echo "✅ Frontend dist copied to /var/www/murshid"
+            fi
+
             # Reload Nginx web server if present
             if command -v nginx &> /dev/null; then
-              sudo systemctl reload nginx
+              sudo systemctl reload nginx || sudo service nginx reload || true
               echo "✅ Nginx reloaded."
             fi
 
